@@ -1,6 +1,6 @@
-title: linux learning
+title: Linux
 url: https://professordeng.github.io
 baseurl: /linux-learning
-description: 邓文丰的个人博客
+description: neuron zone
 
 math: "<script type=\"text/x-mathjax-config\">MathJax.Hub.Config({tex2jax: {inlineMath: [ ['$','$'] ]}});</script><script src=\"//cdn.bootcss.com/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML\"></script>"
