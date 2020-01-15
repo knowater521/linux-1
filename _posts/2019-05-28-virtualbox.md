@@ -8,7 +8,7 @@ title: virtualbox
 
 官方下载 virtualbox （或者去腾讯软件中心）
 
-安装 virtualbox，一切默认
+安装 virtualbox，一切默认。
 
 ## 安装 centos
 
