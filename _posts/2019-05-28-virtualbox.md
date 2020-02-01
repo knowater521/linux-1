@@ -26,6 +26,54 @@ title: VirtualBox 上安装 Linux 系统
 
 和安装 Centos 的前 5 步一样，然后进入 Ubuntu 安装界面。
 
+### 3.1 更换默认源
+
+Ubuntu 18.04 的默认国外源下载速度过慢，修改为国内源会快很多。首先备份源文件
+
+```bash
+sudo cp /etc/apt/sources.list /etc/apt/sources.list.bak
+sudo vi /etc/apt/sources.list
+```
+
+清空 `sources.list`，选择下列其中一个国内源拷贝到 `sources.list` 。
+
+1. 阿里源
+
+   ```bash
+   deb http://mirrors.aliyun.com/ubuntu/ bionic main restricted universe multiverse
+   deb http://mirrors.aliyun.com/ubuntu/ bionic-security main restricted universe multiverse
+   deb http://mirrors.aliyun.com/ubuntu/ bionic-updates main restricted universe multiverse
+   deb http://mirrors.aliyun.com/ubuntu/ bionic-proposed main restricted universe multiverse
+   deb http://mirrors.aliyun.com/ubuntu/ bionic-backports main restricted universe multiverse
+   deb-src http://mirrors.aliyun.com/ubuntu/ bionic main restricted universe multiverse
+   deb-src http://mirrors.aliyun.com/ubuntu/ bionic-security main restricted universe multiverse
+   deb-src http://mirrors.aliyun.com/ubuntu/ bionic-updates main restricted universe multiverse
+   deb-src http://mirrors.aliyun.com/ubuntu/ bionic-proposed main restricted universe multiverse
+   deb-src http://mirrors.aliyun.com/ubuntu/ bionic-backports main restricted universe multiverse
+   ```
+
+2. 清华源
+
+   ```bash
+   deb https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ bionic main restricted universe multiverse
+   deb-src https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ bionic main restricted universe multiverse
+   deb https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ bionic-updates main restricted universe multiverse
+   deb-src https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ bionic-updates main restricted universe multiverse
+   deb https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ bionic-backports main restricted universe multiverse
+   deb-src https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ bionic-backports main restricted universe multiverse
+   deb https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ bionic-security main restricted universe multiverse
+   deb-src https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ bionic-security main restricted universe multiverse
+   deb https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ bionic-proposed main restricted universe multiverse
+   deb-src https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ bionic-proposed main restricted universe multiverse
+   ```
+
+保存 `sources.list` 后执行
+
+```bash
+sudo apt-get update
+sudo apt-get upgrade
+```
+
 ## 4. 常见问题
 
 1. 安装增强功能的时候，需要将桌面的磁盘弹出。
