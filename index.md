@@ -1,4 +1,4 @@
-[Archives](/) | [Resources](/resources)
+[Archives](/) | [Resources](/linux-learning/resources)
 
 ## List of Articles
 
