@@ -14,14 +14,12 @@ sudo chmod -R 777 xxx
 
 ## 1. 权限位解释
 
-在 Linux 中，有 5 种权限，分别是 r、w、x、s、t。
+在 Linux 常用权限位如下：
 
 1. 可读权限 ：r
 2. 可写权限 ：w
 3. 可执行权限 ：x
-4. Setuid ：s（Set User ID）
-5. Setgid ：s（Set Group ID）
-6. 粘滞位 ：t
+4. 粘滞位：t
 
 ### 1.1 可读权限
 
@@ -45,98 +43,52 @@ sudo chmod -R 777 xxx
 
 1. 用字符表示：x
 2. 用八进制表示：1
-3. 可以执行该文件（脚本或命令）
+3. 可以执行该文件（脚本或命令），若是目录可以 cd 进入
 
-对于目录，可写权限：
-
-1. 用字符表示：x
-2. 用八进制表示：1
-3. 可以cd进入该目录
-
-### 1.4 Setuid
-
-这是一个特殊的权限位，对于文件：
-
-1. 用字符表示：s
-2. 用八进制表示：4000
-
-`Setuid` 最常用的是配合执行权限 `x` 使用，例如，系统中内置命令 `passwd`，它默认是带有 `s` 权限位，`passwd` 命令的主要功能是修改用户的密码，而修改密码的流程是：
-
-1. 将加密后的哈希值写入到 `/etc/passwd` 文件对应的用户条目中。
-2. 使用 `pwconv` 工具转换到 `/etc/shadow` 文件中。
-3. 而普通用户是没有权限修改`/etc/passwd` 和 `/etc/shadow` 文件的
-
-在普通用户尝试执行 `passwd`，该 `passwd` 的所有者是 `root` 并且设置了 `Suid`，因此 `passwd` 以 `root` 身份执行。
-
-### 1.5 Setgid
-
-这是一个特殊的权限位，对于目录：
-
-1. 用字符表示：s
-2. 用八进制表示：2000
-
-当一个目录拥有 `sgid` 权限时，其他用户在该目录下创建文件或目录后，它会继承目录的 `id`，即创建的文件或目录的属组为父目录的属组。
-
-```bash
-root# mkdir project
-root# chmod 2777 project/
-root# ls -lh
-total 8.0K
-drwxrwsrwx 2 root   root   4.0K Mar 11 16:29 project
-drwxrwxr-x 3 ubuntu ubuntu 4.0K Mar 11 16:00 xv6-expansion
-root# su ubuntu
-ubuntu# mkdir project/test_for_ubuntu
-ubuntu# ls -lh project 
-total 4.0K
-drwxrwsr-x 2 ubuntu root 4.0K Mar 11 16:30 test_for_ubuntu
-```
-
-### 1.6 粘滞位
+### 1.4 粘滞位
 
 这是一个特殊的权限位，对于目录：
 
 1. 用字符表示：t
 2. 用八进制表示：1000
 
-`/tmp` 目录就是使用了粘滞位 `t`，其作用是，在该目录下创建文件或目录后，仅允许其作者（所有者）进行删除操作。其他用户无法删除。
+`/tmp` 目录就是使用了粘滞位 `t`，其作用是在该目录下创建文件或目录后，仅允许其作者（所有者）进行删除操作。其他用户无法删除。
 
-## 2. 样例演示
+## 2. 修改权限样例
 
 如下例子：
 
 ```bash
-# ll 
-total 4.0K
-drwxrwxr-x 3 ubuntu ubuntu 4.0K Mar 11 16:00 xv6-expansion
+$ echo hello > a.txt    # 生成 a.txt 文件，内容为 hello
+$ ls -sh a.txt          # 查看文件大小
+4.0K a.txt              # 说明文件系统的存储单位为 4K
+$ ls -lh a.txt          # list 表示列表显示, human 表示文件大小带单位
+-rw-rw-rw- 1 ubuntu ubuntu 6 May  2 22:09 a.txt # 6 表示文件内容为 6 字节
+$ chmod u=--- a.txt     # 设置不可读不可写
+$ ls -lh a.txt          # 查看信息
+----rw-rw- 1 ubuntu ubuntu 6 May  2 22:09 a.txt
+$ cat a.txt             # 尝试读取信息
+cat: a.txt: Permission denied  # 不可读
+$ chmod u=rw- a.txt     # 设置可读可写
+$ ls -lh a.txt          # 查看是否可读
+-rw-rw-rw- 1 ubuntu ubuntu 6 May  2 22:09 a.txt 
+$ cat a.txt             
+hello                   # 正常读写
 ```
 
-第一个字符常用的含义如下：
+`drwxrwxr-x` 有 10 个字符，含义分别是：
 
-1. `-`：常规文件
-2. `b`：块特殊文件
-3. `c`：高性能（“连续数据”）文件
-4. `d`：目录
-5. `l`：符号链接
-6. `P`：FIFO（命名管道）
-7. `s`：套接字
-8. `?`：其他文件
+第 1 个字符表示目录（directory）
 
-2~4 个字符分别表示属主的读、写、执行权限。
+第 2~4 个字符分别表示属主（`u`）的读、写、执行权限。
 
-5~7 个字符分别表示属组的读、写、执行权限。
+第 5~7 个字符分别表示属组（`g`）的读、写、执行权限。
 
-8~10 个字符分别表示其他人的读、写、执行权限。
-
-接下来后面的信息分别是属主、属组、文件大小、最后一次修改的时间、文件或目录的名称。
+第 8~10 个字符分别表示其他人（`o`）的读、写、执行权限。
 
 ## 3. 掩码
 
 `umask` 是一个内置命令，其作用是指定创建的文件或目录的默认权限。
-
-使用方法：`umask [-S|-p] [mode]`
-
-- `[-s]` ：打印出字符权限位
-- `[-p]` ：打印出八进制数权限位（默认）
 
 使用不加任何参数的 `umask` 会打印出八进制的权限，有 4 位。
 
@@ -150,7 +102,7 @@ drwxrwxr-x 3 ubuntu ubuntu 4.0K Mar 11 16:00 xv6-expansion
 ```bash
 # mkdir test_dir
 # touch test_txt
-# ls -lh        
+# ll       
 total 4.0K
 drwxrwxr-x 2 ubuntu ubuntu 4.0K Mar 11 16:50 test_dir
 -rw-rw-r-- 1 ubuntu ubuntu    0 Mar 11 16:50 test_txt
@@ -160,7 +112,7 @@ drwxrwxr-x 2 ubuntu ubuntu 4.0K Mar 11 16:50 test_dir
 0777
 # mkdir test_dir
 # touch test_txt
-# ls -lh
+# ll
 total 4.0K
 d--------- 2 ubuntu ubuntu 4.0K Mar 11 16:52 test_dir
 ---------- 1 ubuntu ubuntu    0 Mar 11 16:52 test_txt
